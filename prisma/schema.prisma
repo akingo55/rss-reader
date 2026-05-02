@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Feed {
+  id  Int @id @default(autoincrement())
+  title String
+  rssUrl  String @map("rss_url")
+  siteUrl String @map("site_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  articles Article[]
+
+  @@map("feeds")
+}
+
+model Article {
+  id  Int @id @default(autoincrement())
+  feedId Int @map("feed_id")
+  title String
+  url String
+  summary String
+  publishedAt DateTime @map("published_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  feed Feed @relation(fields: [feedId], references: [id])
+
+  @@map("articles")
+}
