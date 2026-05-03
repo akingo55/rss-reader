@@ -9,35 +9,77 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Feed {
-  id  Int @id @default(autoincrement())
-  title String
-  rssUrl  String @map("rss_url")
-  siteUrl String @map("site_url")
+  id        Int      @id @default(autoincrement())
+  title     String
+  rssUrl    String   @unique @map("rss_url")
+  siteUrl   String   @map("site_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  articles Article[]
+  articles  Article[]
+  userFeeds UserFeed[]
 
   @@map("feeds")
 }
 
 model Article {
-  id  Int @id @default(autoincrement())
-  feedId Int @map("feed_id")
-  title String
-  url String
-  summary String
-  publishedAt DateTime @map("published_at")
+  id          Int       @id @default(autoincrement())
+  feedId      Int       @map("feed_id")
+  title       String
+  url         String
+  summary     String?
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  feed         Feed          @relation(fields: [feedId], references: [id])
+  articleReads ArticleRead[]
+
+  @@unique([feedId, url])
+  @@map("articles")
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  name      String?
+  email     String?  @unique
+  avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  feed Feed @relation(fields: [feedId], references: [id])
+  userFeeds    UserFeed[]
+  articleReads ArticleRead[]
 
-  @@map("articles")
+  @@map("profiles")
+}
+
+model UserFeed {
+  profileId String   @map("profile_id") @db.Uuid
+  feedId    Int      @map("feed_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile Profile @relation(fields: [profileId], references: [id])
+  feed    Feed    @relation(fields: [feedId], references: [id])
+
+  @@id([profileId, feedId])
+  @@map("user_feeds")
+}
+
+model ArticleRead {
+  profileId String   @map("profile_id") @db.Uuid
+  articleId Int      @map("article_id")
+  readAt    DateTime @default(now()) @map("read_at")
+
+  profile Profile @relation(fields: [profileId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+
+  @@id([profileId, articleId])
+  @@map("article_reads")
 }
