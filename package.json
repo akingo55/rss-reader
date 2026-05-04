@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "6.19.3",
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.105.1",
     "graphql": "^16.13.2",
     "graphql-yoga": "^5.21.0",
     "next": "16.2.4",
