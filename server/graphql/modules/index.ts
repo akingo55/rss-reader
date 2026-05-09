@@ -13,8 +13,10 @@ import {
   subscriptionMutationTypeDefs,
   subscriptionQueryTypeDefs,
 } from "@/server/graphql/modules/subscription/typeDefs";
+import { commonTypeDefs } from "@/server/graphql/modules/common/typeDefs";
 
 export const typeDefs = /* GraphQL */ `
+  ${commonTypeDefs}
   ${profileTypeDefs}
   ${feedTypeDefs}
 
@@ -37,5 +39,8 @@ export const resolvers = {
   },
   Mutation: {
     ...subscriptionResolvers.Mutation,
+  },
+  Feed: {
+    ...feedResolvers.Feed,
   },
 };
