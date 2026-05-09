@@ -20,6 +20,11 @@ export const schema = createSchema<GraphQLContext>({
     type Query {
       feeds: [Feed!]!
       me: Profile!
+      myFeeds: [Feed!]!
+    }
+
+    type Mutation {
+      subscribeFeed(feedId: ID!): Feed!
     }
   `,
   resolvers: {
@@ -35,6 +40,47 @@ export const schema = createSchema<GraphQLContext>({
           where: { id: context.user.id }
         });
       },
+      myFeeds: async (_parent, _args, context) => {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
+        return prisma.feed.findMany({
+          where: {
+            userFeeds: {
+             some: {
+               profileId: context.user.id
+             }
+            }
+          }
+        });
+      }
     },
-  },
+    Mutation: {
+      subscribeFeed: async (_parent, args, context) => {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
+
+        const feedId = Number(args.feedId);
+
+        await prisma.userFeed.upsert({
+          where: {
+            profileId_feedId: {
+              profileId: context.user.id,
+              feedId: feedId
+            }
+          },
+          create: {
+            profileId: context.user.id,
+            feedId: feedId
+          },
+          update: {},
+        });
+
+        return prisma.feed.findUniqueOrThrow({
+          where: { id: feedId }
+        });
+      },
+    },
+  }
 });
