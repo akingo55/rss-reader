@@ -6,3 +6,8 @@ repos:
         entry: gitleaks git --pre-commit --redact --staged
         language: system
         pass_filenames: false
+      - id: lint-staged
+        name: Run lint-staged
+        entry: npm run lint-staged
+        language: system
+        pass_filenames: false

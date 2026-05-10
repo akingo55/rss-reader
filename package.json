@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
@@ -31,8 +32,12 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "lint-staged": "^17.0.4",
     "supabase": "^2.98.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix"
   }
 }
