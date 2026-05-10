@@ -1,4 +1,6 @@
 import { prisma } from "@/server/db/client";
+import { createFeedInputSchema } from "@/server/graphql/modules/feed/validation";
+import { toGraphQLError } from "@/server/graphql/errors";
 
 export const feedResolvers = {
   Query: {
@@ -14,15 +16,19 @@ export const feedResolvers = {
   Mutation: {
     createFeed: async (_parent: unknown, args: { input: { title: string; rssUrl: string; siteUrl: string } }) => {
 
-      const { title, rssUrl, siteUrl } = args.input;
-      return prisma.feed.create({
-        data: {
-          title,
-          rssUrl,
-          siteUrl,
-        },
-      });
-    },
+      try {
+        const { title, rssUrl, siteUrl } = createFeedInputSchema.parse(args.input);
+        return await prisma.feed.create({
+          data: {
+            title,
+            rssUrl,
+            siteUrl,
+          },
+        });
+      } catch (error) {
+        throw toGraphQLError(error);
+      }
+    }
   },
   Feed: {
     articles: async (parent: { id: number }, args: { input?: { page?: number; perPage?: number } }) => {
