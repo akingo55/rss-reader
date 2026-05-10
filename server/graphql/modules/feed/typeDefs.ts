@@ -6,32 +6,18 @@ export const feedTypeDefs = /* GraphQL */ `
     siteUrl: String!
     articles(input: ArticleListInput): ArticleConnection!
   },
-  type Article {
-    id: ID!
-    feedId: ID!
+  input CreateFeedInput {
     title: String!
-    url: String!
-    summary: String
-    publishedAt: DateTime
+    rssUrl: String!
+    siteUrl: String!
   },
-  type ArticleConnection {
-    nodes: [Article!]!
-    pageInfo: PageInfo!
-  }
-
-  input ArticleListInput {
-    page: Int = 1
-    perPage: Int = 30
-    sort: ArticleSort = PUBLISHED_AT_DESC
-  }
-
-  enum ArticleSort {
-    PUBLISHED_AT_ASC
-    PUBLISHED_AT_DESC
-  }
 `;
 
 export const feedQueryTypeDefs = /* GraphQL */ `
   feeds: [Feed!]!
   feed(id: ID!): Feed!
+`;
+
+export const feedMutationTypeDefs = /* GraphQL */ `
+  createFeed(input: CreateFeedInput!): Feed!
 `;

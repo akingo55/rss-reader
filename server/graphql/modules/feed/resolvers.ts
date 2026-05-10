@@ -11,6 +11,19 @@ export const feedResolvers = {
       });
     }
   },
+  Mutation: {
+    createFeed: async (_parent: unknown, args: { input: { title: string; rssUrl: string; siteUrl: string } }) => {
+
+      const { title, rssUrl, siteUrl } = args.input;
+      return prisma.feed.create({
+        data: {
+          title,
+          rssUrl,
+          siteUrl,
+        },
+      });
+    },
+  },
   Feed: {
     articles: async (parent: { id: number }, args: { input?: { page?: number; perPage?: number } }) => {
     const page = args.input?.page ?? 1;
