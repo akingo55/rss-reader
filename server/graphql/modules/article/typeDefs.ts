@@ -16,8 +16,20 @@ export const articleTypeDefs = /* GraphQL */ `
     perPage: Int = 30
     sort: ArticleSort = PUBLISHED_AT_DESC
   },
+  input CreateArticleInput {
+    feedId: ID!
+    title: String!
+    url: String!
+    summary: String
+    publishedAt: DateTime
+  },
   enum ArticleSort {
     PUBLISHED_AT_ASC
     PUBLISHED_AT_DESC
   }
 `;
+
+export const articleMutationTypeDefs = /* GraphQL */ `
+  createArticle(input: CreateArticleInput!): Article!
+`;
+

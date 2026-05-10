@@ -15,7 +15,11 @@ import {
   subscriptionQueryTypeDefs,
 } from "@/server/graphql/modules/subscription/typeDefs";
 import { commonTypeDefs } from "@/server/graphql/modules/common/typeDefs";
-import { articleTypeDefs } from "@/server/graphql/modules/article/typeDefs";
+import {
+  articleTypeDefs,
+  articleMutationTypeDefs
+} from "@/server/graphql/modules/article/typeDefs";
+import { articleResolvers } from "@/server/graphql/modules/article/resolvers";
 
 export const typeDefs = /* GraphQL */ `
   ${commonTypeDefs}
@@ -32,6 +36,7 @@ export const typeDefs = /* GraphQL */ `
   type Mutation {
     ${subscriptionMutationTypeDefs}
     ${feedMutationTypeDefs}
+    ${articleMutationTypeDefs}
   }
 `;
 
@@ -44,6 +49,7 @@ export const resolvers = {
   Mutation: {
     ...subscriptionResolvers.Mutation,
     ...feedResolvers.Mutation,
+    ...articleResolvers.Mutation,
   },
   Feed: {
     ...feedResolvers.Feed,
